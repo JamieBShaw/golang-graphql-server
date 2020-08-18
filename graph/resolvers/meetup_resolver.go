@@ -2,7 +2,7 @@ package resolvers
 
 import (
 	"context"
-	"errors"
+	"log"
 
 	"github.com/JamieBShaw/golang-graphql-server/graph/generated"
 	"github.com/JamieBShaw/golang-graphql-server/graph/models"
@@ -19,45 +19,11 @@ func (r *meetupResolver) User(ctx context.Context, obj *models.Meetup) (*models.
 	// Just need to enact the userloader here which will load in the user with the specific userkey
 	user, err := getUserLoader(ctx).Load(obj.UserID)
 	if err != nil {
-		r.MeetupsRepo.Log.Error("Could not retrieve user associated with meetup", err)
+		log.Printf("Error, userLoader", err)
 		return nil, err
 	}
+
 	return user, nil
-}
-
-func (r *mutationResolver) UpdateMeetup(ctx context.Context, id string, input *models.UpdateMeetup) (*models.Meetup, error) {
-	meetup, err := r.MeetupsRepo.GetByID(id)
-	if err != nil || meetup == nil {
-		return nil, err
-	}
-
-	didUpdate := false
-
-	if input.Name != nil {
-		if len(*input.Name) < 3 {
-			return nil, errors.New("Name is not long enough")
-		}
-		meetup.Name = *input.Name
-		didUpdate = true
-	}
-	if input.Description != nil {
-		if len(*input.Description) < 10 {
-			return nil, errors.New("Description is not long enough")
-		}
-		meetup.Description = *input.Description
-		didUpdate = true
-	}
-
-	if !didUpdate {
-		return nil, errors.New("No valid input given to update")
-	}
-
-	meetup, err = r.MeetupsRepo.Update(meetup)
-	if err != nil {
-		return nil, err
-	}
-
-	return meetup, nil
 }
 
 // Meetup returns generated.MeetupResolver implementation.

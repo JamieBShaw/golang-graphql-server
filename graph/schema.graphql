@@ -5,6 +5,8 @@ type User {
   firstName: String!
   lastName: String!
   meetups: [Meetup!]!
+  createdAt: Time!
+  updatedAt: Time!
 }
 
 type Meetup {
@@ -12,6 +14,33 @@ type Meetup {
   name: String!
   description: String!
   user: User!
+}
+
+scalar Time
+
+type AuthToken {
+  accessToken: String!
+  expiredAt: Time!
+}
+
+type AuthResponse {
+  authToken: AuthToken!
+  user: User!
+}
+
+input RegisterInput {
+  username: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
+  firstName: String!
+  lastName: String!
+}
+
+input LoginInput {
+  username: String
+  email: String
+  password: String!
 }
 
 input NewMeetup {
@@ -24,8 +53,13 @@ input UpdateMeetup {
   description: String
 }
 
+input MeetupFilter {
+  id: ID
+  name: String
+}
+
 type Query {
-  meetups: [Meetup!]!
+  meetups(filter: MeetupFilter, limit: Int = 10, offset: Int = 0): [Meetup!]!
   user(id: ID!): User!
 }
 
@@ -33,4 +67,6 @@ type Mutation {
   createMeetup(input: NewMeetup!): Meetup!
   updateMeetup(id: ID!, input: UpdateMeetup): Meetup!
   deleteMeetup(id: ID!): Boolean!
+  registerUser(input: RegisterInput!): AuthResponse!
+  LoginUser(input: LoginInput!): AuthResponse!
 }

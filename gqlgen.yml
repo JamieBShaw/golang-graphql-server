@@ -34,6 +34,17 @@ resolver:
   dir: graph/resolvers
   package: resolvers
 
+# The below isnt a thing apparently :(
+#resolvers:
+#User:
+#resolver: github.com/JamieBShaw/golang-graphql-server/graph/resolvers.userResolver
+#Meetup:
+#resolver: github.com/JamieBShaw/golang-graphql-server/graph/resolvers.meetupResolver
+#Mutation:
+#resolver: github.com/JamieBShaw/golang-graphql-server/graph/resolvers.mutationResolver
+#Query:
+#resolver: github.com/JamieBShaw/golang-graphql-server/graph/resolvers.queryResolver
+
 # Optional: turn on use `gqlgen:"fieldName"` tags in your models
 # struct_tag: json
 

@@ -7,14 +7,15 @@ import (
 	"github.com/JamieBShaw/golang-graphql-server/graph/models"
 )
 
-func (r *queryResolver) Meetups(ctx context.Context) ([]*models.Meetup, error) {
-	return r.MeetupsRepo.GetAll()
-}
+type queryResolver struct{ *Resolver }
 
-// Mutation returns generated.MutationResolver implementation.
-// Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
-// User returns generated.UserResolver implementation.
+func (q *queryResolver) Meetups(ctx context.Context, filter *models.MeetupFilter, limit *int, offset *int) ([]*models.Meetup, error) {
+	return q.Domain.MeetupsRepo.GetMeetups(filter, limit, offset)
+}
+func (q *queryResolver) User(ctx context.Context, id string) (*models.User, error) {
+	return q.Domain.UsersRepo.GetByID(id)
+}
 
-type queryResolver struct{ *Resolver }
+// Query returns generated.QueryResolver implementation.
